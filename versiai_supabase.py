@@ -41,7 +41,7 @@ def init_session_state():
     if "bourse_list" not in st.session_state:
         st.session_state.bourse_list = get_data_supabase("bourse")
     if "domain_list" not in st.session_state:
-        st.session_state.bourse_list = get_data_supabase("domain")
+        st.session_state.domain_list = get_data_supabase("domain")
     if "section" not in st.session_state:
         st.session_state.section = "search"
     if "selected_id" not in st.session_state:
