@@ -36,7 +36,7 @@ versiai_gsheet = st.Page(
 
 versiai_supabase = st.Page(
     page='versiai_supabase.py',
-    title='Alumni',
+    title='France Alumni Indonesia',
     icon='📦',
 )
 

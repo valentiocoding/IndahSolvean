@@ -14,7 +14,7 @@ st.set_page_config(layout="wide")
 st.session_state.setdefault("maindata", get_data_gsheet("1OFjU_hko0oTF76kNyN1VGs9NpKzZ6qfCq2TJIuvTiBg","MainData"))
 
 
-st.header(":gray[Alumni Master Data]", divider="gray")
+st.header(":gray[France Alumni Indonesia - Main Data]", divider="gray")
 
 data = st.session_state.maindata
 
