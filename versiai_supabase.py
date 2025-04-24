@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 # Configuration
 st.set_page_config(layout="wide")
-st.header(":gray[France Alumni Indonesia - Main Data]", divider="gray")
+st.header(":gray[France Alumni Indonesia]", divider="gray")
 
 
 def calculate_age(birth_date):
