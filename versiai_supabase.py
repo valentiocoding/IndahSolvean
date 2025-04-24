@@ -193,7 +193,7 @@ def display_addnew_section():
             st.text_input("Nom/prenom", value=nom_prenom, disabled=True)
             personal_courriel = st.text_input("Adresse courriel", key="personal_courriel")
             sex = st.selectbox("Sexe", options=['Homme', 'Femme', 'Inconnu'], key="sex")
-            birth_date = st.date_input("Date de Naissance", key="birth_date", value=None)
+            birth_date = st.date_input("Date de Naissance", key="birth_date", value=None, format="DD/MM/YYYY")
 
         with col2:
             personal_pays = st.text_input("Pays", key="personal_pays")
@@ -320,7 +320,7 @@ def display_edit_section():
             
             birth_date = st.date_input("Date de Naissance", 
                                      value=datetime.strptime(selected_data["birth_date"], "%Y-%m-%d").date() if selected_data["birth_date"] else None,
-                                     key="edit_birth_date")
+                                     key="edit_birth_date", format="DD/MM/YYYY")
 
         with col2:
             personal_pays = st.text_input("Pays", 
