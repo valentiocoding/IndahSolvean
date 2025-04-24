@@ -121,8 +121,8 @@ def display_search_section():
             st.text_area("Ville", value=selected_data.get("personal_ville", ""), disabled=True, key="personal_ville")
             st.text_area("Adresse Personnelle", value=selected_data.get("personal_address", ""), disabled=True, key="personal_address")
             display_field("Code postale", selected_data["code_post"])
-            display_field("NumÃ©ro de tÃ©lÃ©phone", selected_data["personal_number"])
-            display_field("NumÃ©ro de portable", selected_data["personal_portable"])
+            display_field("Numéro de téléphone", selected_data["personal_number"])
+            display_field("Numéro de portable", selected_data["personal_portable"])
 
     # University Tab - FIXED: using .get() for safer dict access
     with university:
@@ -201,8 +201,8 @@ def display_addnew_section():
             personal_ville = st.text_area("Ville", key="personal_ville")
             personal_address = st.text_area("Adresse Personnelle", key="personal_address")
             code_post = st.text_input("Code postale", key="code_post")
-            personal_number = st.text_input("NumÃ©ro de tÃ©lÃ©phone", key="personal_number")
-            personal_portable = st.text_input("NumÃ©ro de portable", key="personal_portable")
+            personal_number = st.text_input("Numéro de téléphone", key="personal_number")
+            personal_portable = st.text_input("Numéro de portable", key="personal_portable")
 
     with university:
         col1, col2 = st.columns(2)
