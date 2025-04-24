@@ -42,7 +42,7 @@ versiai_supabase = st.Page(
 
 custom_report = st.Page(
     page='custom_report.py',
-    title='by Sexe',
+    title='Filtered Data',
     icon='📦',
 )
 

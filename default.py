@@ -55,7 +55,7 @@ if st.session_state.section == "search":
 
     # Start Tab
 
-    personal, university, activity = st.tabs(['Personal Information', "University Information", "Activity Information"])
+    personal, university, activity,notes = st.tabs(['Personal Information', "University Information", "Activity Information", "Notes/Commantaine"])
 
     # Start Personal
     with personal:
@@ -115,7 +115,10 @@ if st.session_state.section == "search":
             activity_courriel = st.text_input("Adresse courriel professionnel", value=data[data['name_filter'] == name]['activity_courriel'].values[0], disabled=True)
 
     # End Activity
-
+    with notes:
+        col1,col2 = st.columns(2)
+        with col1:
+            notes = st.text_input("Notes/Commantaine", value=data[data['name_filter'] == name]['notes_commantaine'].values[0],disabled=True)
     # End Tab
 
 

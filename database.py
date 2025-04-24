@@ -10,7 +10,7 @@ SUPABASE_KEY = secrets["SUPABASE_SERVICE_ROLE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-def input_data(nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse):
+def input_data(nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse, notes):
     # Collect all the form data into a dictionary
     data = {
         "nom_prenom": nom_prenom, 
@@ -46,6 +46,7 @@ def input_data(nom_prenom, prenom, nom, sex, birth_date, personal_address, code_
         "activity_number": activity_number, 
         "activity_courriel": activity_courriel, 
         "bourse": bourse, 
+        "notes_commantaine": notes
     }
     
     try:
@@ -86,7 +87,7 @@ def insert_bourse(value):
 
 
 
-def edit_data(record_id, nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse):
+def edit_data(record_id, nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse, notes):
     data = {
         "nom_prenom": nom_prenom, 
         "prenom": prenom, 
@@ -121,6 +122,7 @@ def edit_data(record_id, nom_prenom, prenom, nom, sex, birth_date, personal_addr
         "activity_number": activity_number, 
         "activity_courriel": activity_courriel, 
         "bourse": bourse, 
+        "notes_commantaine":notes
     }
     try:
         # Convert date fields to ISO format

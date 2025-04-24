@@ -102,7 +102,7 @@ def display_search_section():
         display_field("Durée (prevue du sejour (en mois))", selected_data["duree"])
 
     # Tabs
-    personal, university, activity = st.tabs(['Personal Information', "University Information", "Activity Information"])
+    personal, university, activity, notes = st.tabs(['Personal Information', "University Information", "Activity Information", "Notes/Commantaine"])
 
     # Personal Tab - FIXED: consistent field display
     with personal:
@@ -158,6 +158,11 @@ def display_search_section():
             display_field("N° de téléphone professionnel", selected_data.get("activity_number", ""))
             display_field("Adresse courriel professionnel", selected_data.get("activity_courriel", ""))
 
+    with notes:
+        col1,col2 = st.columns(2)
+        with col1:
+            display_field("Notes/Commantaine", selected_data.get('notes_commantaine',""))
+
 # Add New Section - IMPROVED: better form handling
 def display_addnew_section():
     if st.button("Back to Search"):
@@ -177,7 +182,7 @@ def display_addnew_section():
         end_year = st.text_input("Année de fin des etudes en France", key="end_year")
         duree = st.text_input("Durée (prevue du sejour (en mois))", key="duree")
 
-    personal, university, activity = st.tabs(['Personal Information', "University Information", "Activity Information"])
+    personal, university, activity, notes = st.tabs(['Personal Information', "University Information", "Activity Information", "Notes/Commantaine"])
 
     with personal:
         col1, col2 = st.columns(2)
@@ -233,6 +238,10 @@ def display_addnew_section():
             activity_address = st.text_input("Adresse professionel", key="activity_address")
             activity_number = st.text_input("N° de téléphone professionnel",key="activity_number")
             activity_courriel = st.text_input("Adresse courriel professioinnel", key="activity_courriel")
+    with notes:
+        col1,col2 = st.columns(2)
+        with col1:
+            notes = st.text_input("Notes/Commantaine", key="notes_commantaine")
 
 
 
@@ -240,7 +249,7 @@ def display_addnew_section():
     if st.button("Submit New Record"):
         age = format_age(birth_date)
         birth_date = birth_date.strftime("%Y-%m-%d")
-        input_data(nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse)
+        input_data(nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse, notes)
         st.session_state.maindata = get_data_supabase("maindata")
         st.session_state.section = 'search'
         
@@ -284,7 +293,7 @@ def display_edit_section():
                             value=selected_data["duree"],
                             key="edit_duree")
 
-    personal, university, activity = st.tabs(['Personal Information', "University Information", "Activity Information"])
+    personal, university, activity, notes = st.tabs(['Personal Information', "University Information", "Activity Information", "Notes/Commantaine"])
 
     with personal:
         col1, col2 = st.columns(2)
@@ -372,11 +381,16 @@ def display_edit_section():
         with col2:
             activity_address = st.text_input("Adresse professionel", selected_data.get("activity_address", ""))
             activity_number = st.text_input("N° de téléphone professionnel", selected_data.get("activity_number", ""))
-            activity_courriel = st.text_input("Adresse courriel professionnel", selected_data.get("activity_courriel", ""))        
+            activity_courriel = st.text_input("Adresse courriel professionnel", selected_data.get("activity_courriel", ""))  
+
+    with notes:
+        col1,col2 = st.columns(2)
+        with col1:
+            notes = st.text_input("Notes/Commantaine", selected_data.get("notes_commantaine",""))      
         
             
     if st.button("Updated"):
-        edit_data(st.session_state.selected_id,nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse)
+        edit_data(st.session_state.selected_id,nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse, notes)
         st.session_state.maindata = get_data_supabase("maindata")
         st.success("Success Update!")
 
