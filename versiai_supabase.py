@@ -113,7 +113,9 @@ def display_search_section():
             display_field("Nom", selected_data["nom"])
             display_field("Adresse courriel", selected_data["personal_courriel"])
             display_field("Sexe", selected_data["sex"])
-            display_field("Date de Naissance", selected_data["birth_date"])
+            birth_date = st.date_input("Date de Naissance", 
+                                     value=datetime.strptime(selected_data["birth_date"], "%Y-%m-%d").date() if selected_data["birth_date"] else None,
+                                     key="edit_birth_date", format="DD/MM/YYYY", disabled=True)
 
         with col2:
             display_field("Pays", selected_data["personal_pays"])
