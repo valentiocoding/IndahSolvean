@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from database import get_data_supabase, input_data, edit_data
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 # Configuration
 st.set_page_config(layout="wide")
@@ -115,7 +115,7 @@ def display_search_section():
             display_field("Sexe", selected_data["sex"])
             birth_date = st.date_input("Date de Naissance", 
                                      value=datetime.strptime(selected_data["birth_date"], "%Y-%m-%d").date() if selected_data["birth_date"] else None,
-                                     key="edit_birth_date", format="DD/MM/YYYY", disabled=True)
+                                     key="edit_birth_date", format="DD/MM/YYYY", disabled=True, min_value=date(1899, 1, 1), max_value=date(2100, 12, 31))
 
         with col2:
             display_field("Pays", selected_data["personal_pays"])
@@ -195,7 +195,7 @@ def display_addnew_section():
             st.text_input("Nom/prenom", value=nom_prenom, disabled=True)
             personal_courriel = st.text_input("Adresse courriel", key="personal_courriel")
             sex = st.selectbox("Sexe", options=['Homme', 'Femme', 'Inconnu'], key="sex")
-            birth_date = st.date_input("Date de Naissance", key="birth_date", value=None, format="DD/MM/YYYY")
+            birth_date = st.date_input("Date de Naissance", key="birth_date", value=None, format="DD/MM/YYYY", min_value=date(1899, 1, 1), max_value=date(2100, 12, 31))
 
         with col2:
             personal_pays = st.text_input("Pays", key="personal_pays")
@@ -322,7 +322,7 @@ def display_edit_section():
             
             birth_date = st.date_input("Date de Naissance", 
                                      value=datetime.strptime(selected_data["birth_date"], "%Y-%m-%d").date() if selected_data["birth_date"] else None,
-                                     key="edit_birth_date", format="DD/MM/YYYY")
+                                     key="edit_birth_date", format="DD/MM/YYYY",min_value=date(1899, 1, 1), max_value=date(2100, 12, 31))
 
         with col2:
             personal_pays = st.text_input("Pays", 
