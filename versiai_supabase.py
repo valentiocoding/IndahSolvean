@@ -7,25 +7,28 @@ from datetime import datetime, timedelta, date
 st.set_page_config(layout="wide")
 st.header(":gray[France Alumni Indonesia]", divider="gray")
 
-
 def calculate_age(birth_date):
-    today = datetime.now()
-    
+    today = datetime.now().date()
+    # Pastikan birth_date bukan None
+    if birth_date is None:
+        return 0, 0, 0
+    # Kalau masih string, convert ke datetime.date
+    if isinstance(birth_date, str):
+        try:
+            birth_date = datetime.strptime(birth_date, "%Y-%m-%d").date()
+        except ValueError:
+            return 0, 0, 0
     years = today.year - birth_date.year
     months = today.month - birth_date.month
     days = today.day - birth_date.day
-    
-    # Adjust for negative months or days
+    # Adjust untuk kasus negatif
     if days < 0:
         months -= 1
-        # Get the last day of the previous month
-        previous_month = today.replace(day=1) - timedelta(days=1)
-        days += previous_month.day
-    
+        prev_month = today.replace(day=1) - timedelta(days=1)
+        days += prev_month.day
     if months < 0:
         years -= 1
         months += 12
-    
     return years, months, days
 
 def format_age(birth_date):
@@ -81,10 +84,8 @@ def display_search_section():
     with col1:
         name_options = data["name_filter"].tolist()
         name = st.selectbox("Name", options=name_options)
-
         if name:
             st.session_state.selected_id = data[data['name_filter'] == name]['id'].iloc[0]
-
         
         if len(data[data["name_filter"] == name]) > 0:
             selected_data = data[data["name_filter"] == name].iloc[0]
@@ -94,7 +95,6 @@ def display_search_section():
         display_field("Etat Professionnel", selected_data["status_professional"], "status_professional")
         
         
-
     with col2:
         display_field("Niveau d'etudes vise", selected_data["niveau"])
         display_field("Année de debut des etudes en France", selected_data["start_year"])
@@ -116,7 +116,6 @@ def display_search_section():
             birth_date = st.date_input("Date de Naissance", 
                                      value=datetime.strptime(selected_data["birth_date"], "%Y-%m-%d").date() if selected_data["birth_date"] else None,
                                      key="edit_birth_date", format="DD/MM/YYYY", disabled=True, min_value=date(1899, 1, 1), max_value=date(2100, 12, 31))
-
         with col2:
             display_field("Pays", selected_data["personal_pays"])
             display_field("Province", selected_data["personal_province"])
@@ -176,7 +175,6 @@ def display_addnew_section():
     with col1:
         status_professional = st.text_input("Etat Professionnel", key="status_professional")
         
-
     with col2:
         niveau_options = niveau_list['niveau'].tolist() if 'niveau' in niveau_list else []
         niveau = st.selectbox("Niveau d'etudes vise", options=niveau_options, key="niveau")
@@ -196,7 +194,6 @@ def display_addnew_section():
             personal_courriel = st.text_input("Adresse courriel", key="personal_courriel")
             sex = st.selectbox("Sexe", options=['Homme', 'Femme', 'Inconnu'], key="sex")
             birth_date = st.date_input("Date de Naissance", key="birth_date", value=None, format="DD/MM/YYYY", min_value=date(1899, 1, 1), max_value=date(2100, 12, 31))
-
         with col2:
             personal_pays = st.text_input("Pays", key="personal_pays")
             personal_province = st.text_input("Province", key="personal_province")
@@ -227,6 +224,7 @@ def display_addnew_section():
                 st.subheader("Domain Etudes 2")
                 university_sector2 = st.selectbox("Secteur / Domaine", options=domain_options, key="university_sector2", index=None)
                 university_sub_sector2 = st.text_area("Sub Secteur / Specialite",  key="university_sub_sector2")
+
     with activity:
         col1, col2 = st.columns(2)
         with col1:
@@ -235,34 +233,46 @@ def display_addnew_section():
             activity_pays = st.text_input("Pays", key="activity_pays")
             activity_province = st.text_input("Province", key="activity_province")
             activity_ville = st.text_area("Ville", key="activity_ville")
-
         with col2:
             activity_address = st.text_input("Adresse professionel", key="activity_address")
             activity_number = st.text_input("N° de téléphone professionnel",key="activity_number")
             activity_courriel = st.text_input("Adresse courriel professioinnel", key="activity_courriel")
+
     with notes:
         col1,col2 = st.columns(2)
         with col1:
             notes = st.text_input("Notes/Commantaine", key="notes_commantaine")
 
-
-
-    # Add submit button
+    # Add submit button - FIXED: Handle None birth_date
     if st.button("Submit New Record"):
-        age = format_age(birth_date)
-        birth_date = birth_date.strftime("%Y-%m-%d")
-        input_data(nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse, notes)
+        age = format_age(birth_date) if birth_date else ""
+        # Ensure birth_date is properly formatted
+        if birth_date:
+            if isinstance(birth_date, str):
+                birth_date_str = birth_date
+            else:
+                birth_date_str = birth_date.strftime("%Y-%m-%d")
+        else:
+            birth_date_str = None
+            
+        # Convert selectbox values to strings to avoid any object issues  
+        niveau_str = str(niveau) if niveau else ""
+        university_sector_str = str(university_sector) if university_sector else ""
+        university_sector2_str = str(university_sector2) if university_sector2 else ""
+        bourse_str = str(bourse) if bourse else ""
+        
+        input_data(nom_prenom, prenom, nom, sex, birth_date_str, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau_str, university_sector_str, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2_str, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse_str, notes)
         st.session_state.maindata = get_data_supabase("maindata")
         st.session_state.section = 'search'
         
         st.success("New record added successfully!")
         st.rerun()
 
-
 def display_edit_section():
     if st.button("Back to Search"):
             st.session_state.section = "search"
             st.rerun()
+
     # Get the selected record
     selected_name = st.text_input("Name", value=data[data['id'] == st.session_state.selected_id]['nom_prenom'].iloc[0], disabled=True)
     selected_data = data[data['id'] == st.session_state.selected_id].iloc[0]
@@ -275,7 +285,6 @@ def display_edit_section():
                                          key="edit_status_professional")
         
         
-
     with col2:
         niveau_options = niveau_list['niveau'].tolist() if 'niveau' in niveau_list else []
         niveau = st.selectbox("Niveau d'etudes vise", 
@@ -320,10 +329,9 @@ def display_edit_section():
                              index=['Homme', 'Femme', 'Inconnu'].index(selected_data["sex"]) if selected_data["sex"] in ['Homme', 'Femme', 'Inconnu'] else 2,
                              key="edit_sex")
             
-            birth_date = st.date_input("Date de Naissance", 
+            edit_birth_date = st.date_input("Date de Naissance", 
                                      value=datetime.strptime(selected_data["birth_date"], "%Y-%m-%d").date() if selected_data["birth_date"] else None,
                                      key="edit_birth_date", format="DD/MM/YYYY",min_value=date(1899, 1, 1), max_value=date(2100, 12, 31))
-
         with col2:
             personal_pays = st.text_input("Pays", 
                                        value=selected_data["personal_pays"],
@@ -352,50 +360,65 @@ def display_edit_section():
             personal_portable = st.text_input("Numéro de portable", 
                                             value=selected_data["personal_portable"],
                                             key="edit_personal_portable")
+
     with university:
         col1, col2 = st.columns(2)
         with col1:
-            education = st.text_area("Etude établissement", value=selected_data['education'], key="education")
+            education = st.text_area("Etude établissement", value=selected_data['education'], key="edit_education")
         with col2:
-            university_ville = st.text_area("Ville", value=selected_data["university_ville"], key="university_ville")
-            bourse = st.text_input("Bourse", value=selected_data.get("bourse", ""))
+            university_ville = st.text_area("Ville", value=selected_data["university_ville"], key="edit_university_ville")
+            bourse = st.text_input("Bourse", value=selected_data.get("bourse", ""), key="edit_bourse")
         
         with st.container(border=True):
             col1, col2 = st.columns(2)
             with col1:
                 st.subheader("Domain Etudes 1")
-                university_sector = st.text_area("Secteur / Domaine", value=selected_data.get("university_sector", ""), key="university_sector")
-                university_sub_sector = st.text_area("Sub Secteur / Specialite", value=selected_data.get("university_sub_sector", ""),  key="university_sub_sector")
+                university_sector = st.text_area("Secteur / Domaine", value=selected_data.get("university_sector", ""), key="edit_university_sector")
+                university_sub_sector = st.text_area("Sub Secteur / Specialite", value=selected_data.get("university_sub_sector", ""),  key="edit_university_sub_sector")
             with col2:
                 st.subheader("Domain Etudes 2")
-                university_sector2 = st.text_area("Secteur / Domaine", value=selected_data.get("university_sector2", ""),  key="university_sector2")
-                university_sub_sector2 = st.text_area("Sub Secteur / Specialite", value=selected_data.get("university_sub_sector2", ""),  key="university_sub_sector2")
+                university_sector2 = st.text_area("Secteur / Domaine", value=selected_data.get("university_sector2", ""),  key="edit_university_sector2")
+                university_sub_sector2 = st.text_area("Sub Secteur / Specialite", value=selected_data.get("university_sub_sector2", ""),  key="edit_university_sub_sector2")
 
     # Activity Tab - FIXED: consistent field access
     with activity:
         col1, col2 = st.columns(2)
         with col1:
-            employeur = st.text_input("Employeur", selected_data.get("employeur", ""), key = "employeur")
-            fonction = st.text_input("Fonction", selected_data.get("fonction", ""), key="fonction")
-            activity_pays = st.text_input("Pays", selected_data.get("activity_pays", ""), key= "activity_pays")
-            activity_province = st.text_input("Province", selected_data.get("activity_province", ""), key="activity_province")
-            activity_ville = st.text_area("Ville", value=selected_data.get("activity_ville", ""), key="activity_ville")
+            employeur = st.text_input("Employeur", selected_data.get("employeur", ""), key = "edit_employeur")
+            fonction = st.text_input("Fonction", selected_data.get("fonction", ""), key="edit_fonction")
+            activity_pays = st.text_input("Pays", selected_data.get("activity_pays", ""), key= "edit_activity_pays")
+            activity_province = st.text_input("Province", selected_data.get("activity_province", ""), key="edit_activity_province")
+            activity_ville = st.text_area("Ville", value=selected_data.get("activity_ville", ""), key="edit_activity_ville")
         with col2:
-            activity_address = st.text_input("Adresse professionel", selected_data.get("activity_address", ""))
-            activity_number = st.text_input("N° de téléphone professionnel", selected_data.get("activity_number", ""))
-            activity_courriel = st.text_input("Adresse courriel professionnel", selected_data.get("activity_courriel", ""))  
+            activity_address = st.text_input("Adresse professionel", selected_data.get("activity_address", ""), key="edit_activity_address")
+            activity_number = st.text_input("N° de téléphone professionnel", selected_data.get("activity_number", ""), key="edit_activity_number")
+            activity_courriel = st.text_input("Adresse courriel professionnel", selected_data.get("activity_courriel", ""), key="edit_activity_courriel")  
 
     with notes:
         col1,col2 = st.columns(2)
         with col1:
-            notes = st.text_input("Notes/Commantaine", selected_data.get("notes_commantaine",""))      
+            notes = st.text_input("Notes/Commantaine", selected_data.get("notes_commantaine",""), key="edit_notes_commantaine")      
         
-            
+    # FIXED: Handle None birth_date in edit section        
     if st.button("Updated"):
-        edit_data(st.session_state.selected_id,nom_prenom, prenom, nom, sex, birth_date, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau, university_sector, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse, notes)
+        # Ensure birth_date is properly formatted
+        if edit_birth_date:
+            if isinstance(edit_birth_date, str):
+                birth_date_str = edit_birth_date
+            else:
+                birth_date_str = edit_birth_date.strftime("%Y-%m-%d")
+        else:
+            birth_date_str = None
+            
+        # Convert selectbox values to strings to avoid any object issues
+        niveau_str = str(niveau) if niveau else ""
+        university_sector_str = str(university_sector) if university_sector else ""
+        university_sector2_str = str(university_sector2) if university_sector2 else ""
+        bourse_str = str(bourse) if bourse else ""
+        
+        edit_data(st.session_state.selected_id, nom_prenom, prenom, nom, sex, birth_date_str, personal_address, code_post, personal_ville, personal_province, personal_pays, personal_number, personal_portable, personal_courriel, start_year, end_year, duree, niveau_str, university_sector_str, university_sub_sector, education, university_ville, status_professional, fonction, employeur, university_sector2_str, university_sub_sector2, activity_address, activity_ville, activity_province, activity_pays, activity_number, activity_courriel, bourse_str, notes)
         st.session_state.maindata = get_data_supabase("maindata")
         st.success("Success Update!")
-
 
 # Main App Logic
 if st.session_state.section == "search":
